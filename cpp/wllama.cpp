@@ -170,14 +170,13 @@ extern "C" const char *wllama_debug()
     return 0;
 #endif
   };
-  /*json res = json{
+  json res = json{
       {"mem_total_MB", get_mem_total() / 1024 / 1024},
       {"mem_free_MB", get_mem_free() / 1024 / 1024},
       {"mem_used_MB", (get_mem_total() - get_mem_free()) / 1024 / 1024},
   };
-  result = std::string(res.dump());
-  return result.c_str();*/
-  return nullptr;
+  result = res.dump();
+  return result.c_str();
 }
 
 int main()

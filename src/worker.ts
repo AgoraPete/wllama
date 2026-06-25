@@ -236,7 +236,12 @@ export class ProxyToWorker {
       args: [],
       callbackId: this.taskId++,
     });
-    return JSON.parse(result);
+    if (!result) return { mem_total_MB: 0, mem_free_MB: 0, mem_used_MB: 0 };
+    try {
+      return JSON.parse(result);
+    } catch {
+      return { mem_total_MB: 0, mem_free_MB: 0, mem_used_MB: 0 };
+    }
   }
 
   ///////////////////////////////////////
