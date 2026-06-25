@@ -175,7 +175,7 @@ extern "C" const char *wllama_debug()
       {"mem_free_MB", get_mem_free() / 1024 / 1024},
       {"mem_used_MB", (get_mem_total() - get_mem_free()) / 1024 / 1024},
   };
-  result = res.dump();
+  auto result = res.dump();
   return result.c_str();
 }
 
