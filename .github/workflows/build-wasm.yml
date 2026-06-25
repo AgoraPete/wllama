@@ -12,6 +12,10 @@ concurrency:
   group: build-wasm-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   build-wasm:
     runs-on: ubuntu-latest
@@ -26,7 +30,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: npm ci --include=dev
@@ -42,13 +45,9 @@ jobs:
 
       - name: Publish @agorapete/wllama
         if: startsWith(github.ref, 'refs/tags/v')
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public --provenance
 
       - name: Publish @agorapete/wllama-compat
         if: startsWith(github.ref, 'refs/tags/v')
         working-directory: ./compat
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public --provenance
