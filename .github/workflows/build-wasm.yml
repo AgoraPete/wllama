@@ -1,0 +1,54 @@
+name: Build WASM & Publish
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+concurrency:
+  group: build-wasm-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-wasm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci --include=dev
+
+      - name: Build WASM (Docker)
+        run: npm run build:wasm
+
+      - name: Build TypeScript package
+        run: npm run build
+
+      - name: Check package size
+        run: node scripts/check_package_size.js
+
+      - name: Publish @agorapete/wllama
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish @agorapete/wllama-compat
+        if: startsWith(github.ref, 'refs/tags/v')
+        working-directory: ./compat
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

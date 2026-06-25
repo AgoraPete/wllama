@@ -1,6 +1,6 @@
 {
-  "name": "@wllama/wllama-compat",
-  "version": "3.5.1",
+  "name": "@agorapete/wllama-compat",
+  "version": "3.5.1-q2.0",
   "description": "Optional package providing compatibility with older browsers for @wllama/wllama",
   "main": "index.js",
   "type": "module",
